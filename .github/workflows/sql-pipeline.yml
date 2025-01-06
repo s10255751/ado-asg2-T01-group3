@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-sql-scripts:
-    runs-on: ubuntu-latest  # Change to Linux-based runner
+    runs-on: ubuntu-latest  # Use a Linux-based runner
 
     steps:
       - name: Checkout repository
@@ -18,22 +18,14 @@ jobs:
 
       - name: Install SnowSQL
         run: |
-          # Set the version and download URL for the SnowSQL bash script
-          SNOWSQL_VERSION="1.2.9"
-          DOWNLOAD_URL="https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/linux_x86_64/snowsql-$SNOWSQL_VERSION-linux_x86_64.bash"
+          # Directly download the SnowSQL installer for version 1.3.2
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.2-linux_x86_64.bash
           
-          # Download the SnowSQL installation script (following redirects if needed)
-          curl -L -O $DOWNLOAD_URL
-
-          # Verify if the downloaded file is a bash script by checking its contents
-          echo "First 10 lines of downloaded file:"
-          head -n 10 snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
-
-          # Ensure the downloaded file is executable
-          chmod +x snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
-
+          # Make the downloaded file executable
+          chmod +x snowsql-1.3.2-linux_x86_64.bash
+          
           # Run the SnowSQL installation script
-          ./snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
+          ./snowsql-1.3.2-linux_x86_64.bash
 
       - name: Set up Snowflake credentials
         run: |
@@ -58,3 +50,4 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
+
