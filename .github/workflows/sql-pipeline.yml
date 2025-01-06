@@ -1,1 +1,49 @@
+name: Snowflake SQL Automation Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger the workflow on pull requests to the main branch
+
+jobs:
+  run-sql-scripts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install SnowSQL (Snowflake CLI)
+        run: |
+          # Install SnowSQL
+          curl -O https://s3.amazonaws.com/snowflake-client/snowflake-snowsql-latest-linux_x86_64.tar.gz
+          tar -xvf snowflake-snowsql-latest-linux_x86_64.tar.gz
+          sudo mv snowsql /usr/local/bin/
+
+      - name: Set up Snowflake credentials
+        run: |
+          echo "[connections.default]" > ~/.snowsql/config
+          echo "accountname = ${SNOWFLAKE_ACCOUNT}" >> ~/.snowsql/config
+          echo "username = ${SNOWFLAKE_USER}" >> ~/.snowsql/config
+          echo "password = ${SNOWFLAKE_PASSWORD}" >> ~/.snowsql/config
+          echo "dbname = ${SNOWFLAKE_DATABASE}" >> ~/.snowsql/config
+          echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> ~/.snowsql/config
+          echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> ~/.snowsql/config
+
+      - name: Run SQL scripts in Snowflake
+        run: |
+          # Run SQL scripts from the repository
+          snowsql -c default -f ./sql/country.sql
+          snowsql -c default -f ./sql/customers.sql
+          snowsql -c default -f ./sql/facebook_ads.sql
+          snowsql -c default -f ./sql/order.sql
+          snowsql -c default -f ./sql/order_details.sql
+          snowsql -c default -f ./sql/payments.sql
+          snowsql -c default -f ./sql/product_reviews.sql
+          snowsql -c default -f ./sql/region.sql
+          snowsql -c default -f ./sql/vendors.sql
+          # Add other SQL scripts here if necessary
 
