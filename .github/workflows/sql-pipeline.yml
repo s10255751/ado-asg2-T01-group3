@@ -27,19 +27,22 @@ jobs:
         run: |
           SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
-      # Ensure the installation is done and set the PATH correctly
-      - name: Verify installation and add to PATH
+      # Debug: Check if snowsql was installed correctly
+      - name: Verify installation
         run: |
-          # Verify if snowsql was installed
+          # Check if the snowsql binary exists in the expected location
+          ls -la ~/snowflake/
+
+          # Confirm the presence of snowsql
           if [ ! -f ~/snowflake/snowsql ]; then
             echo "SnowSQL was not installed correctly!"
             exit 1
           fi
 
           # Add SnowSQL to PATH
-          echo "export PATH=$PATH:~/snowflake" >> $GITHUB_ENV
+          echo "export PATH=\$PATH:~/snowflake" >> $GITHUB_ENV
 
-          # Confirm that snowsql is now available
+          # Verify that snowsql is now available
           snowsql -v
 
       # Set up Snowflake credentials
@@ -66,3 +69,4 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
+
