@@ -10,32 +10,36 @@ on:
 
 jobs:
   run-sql-scripts:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest  # Change to Linux-based runner
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Install SnowSQL
         run: |
-          # Set the version and download URL for the MSI installer
-          $version = "1.3.2"
-          $downloadUrl = "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$version/windows_x86_64/snowsql-$version-windows_x86_64.msi"
-
-          # Download the MSI installer
-          Invoke-WebRequest -Uri $downloadUrl -OutFile "snowsql-installer.msi"
-
-          # Install SnowSQL using the MSI installer
-          Start-Process msiexec.exe -ArgumentList '/i', 'snowsql-installer.msi', '/quiet', '/norestart' -Wait
+          # Set the version and download URL for the SnowSQL bash script
+          SNOWSQL_VERSION="1.2.9"
+          DOWNLOAD_URL="https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/linux_x86_64/snowsql-$SNOWSQL_VERSION-linux_x86_64.bash"
+          
+          # Download the SnowSQL installation script
+          curl -O $DOWNLOAD_URL
+          
+          # Make the downloaded file executable
+          chmod +x snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
+          
+          # Run the SnowSQL installation script
+          ./snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
 
       - name: Set up Snowflake credentials
         run: |
-          echo "[connections.default]" > $env:USERPROFILE\.snowsql\config
-          echo "accountname = ${SNOWFLAKE_ACCOUNT}" >> $env:USERPROFILE\.snowsql\config
-          echo "username = ${SNOWFLAKE_USER}" >> $env:USERPROFILE\.snowsql\config
-          echo "password = ${SNOWFLAKE_PASSWORD}" >> $env:USERPROFILE\.snowsql\config
-          echo "dbname = ${SNOWFLAKE_DATABASE}" >> $env:USERPROFILE\.snowsql\config
-          echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $env:USERPROFILE\.snowsql\config
-          echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $env:USERPROFILE\.snowsql\config
+          echo "[connections.default]" > $HOME/.snowsql/config
+          echo "accountname = ${SNOWFLAKE_ACCOUNT}" >> $HOME/.snowsql/config
+          echo "username = ${SNOWFLAKE_USER}" >> $HOME/.snowsql/config
+          echo "password = ${SNOWFLAKE_PASSWORD}" >> $HOME/.snowsql/config
+          echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
+          echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
+          echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
       - name: Run SQL scripts in Snowflake
         run: |
