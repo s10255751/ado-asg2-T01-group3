@@ -14,8 +14,8 @@ jobs:
 
     steps:
       # Checkout the repository to get the code
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@master
 
       # Download the SnowSQL installer
       - name: Download SnowSQL
@@ -27,25 +27,12 @@ jobs:
         run: |
           SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
-      # Debug: Check if snowsql was installed correctly
-      - name: Verify installation
+      # Test the SnowSQL installation by checking the version
+      - name: Test installation
         run: |
-          # Check if the snowsql binary exists in the expected location
-          ls -la ~/snowflake/
+          ~/snowflake/snowsql -v
 
-          # Confirm the presence of snowsql
-          if [ ! -f ~/snowflake/snowsql ]; then
-            echo "SnowSQL was not installed correctly!"
-            exit 1
-          fi
-
-          # Add SnowSQL to PATH
-          echo "export PATH=\$PATH:~/snowflake" >> $GITHUB_ENV
-
-          # Verify that snowsql is now available
-          snowsql -v
-
-      # Set up Snowflake credentials
+      # Set up Snowflake credentials using environment variables
       - name: Set up Snowflake credentials
         run: |
           echo "[connections.default]" > $HOME/.snowsql/config
