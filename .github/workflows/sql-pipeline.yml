@@ -22,6 +22,11 @@ jobs:
           
           # Download and install SnowSQL
           curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/${SNOWSQL_VERSION}/linux_x86_64/snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+          
+          # Check if file is downloaded successfully
+          ls -l snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+          
+          # If the file is valid, run the bash script
           bash snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
 
       - name: Set up Snowflake credentials
@@ -47,3 +52,4 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
+
