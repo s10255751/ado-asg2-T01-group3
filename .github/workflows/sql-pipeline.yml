@@ -70,6 +70,3 @@ jobs:
           ~/snowflake/snowsql -c default -f ./sql/product_reviews.sql
           ~/snowflake/snowsql -c default -f ./sql/region.sql
           ~/snowflake/snowsql -c default -f ./sql/vendors.sql
-          # Add other SQL scripts here if necessary
-
-
