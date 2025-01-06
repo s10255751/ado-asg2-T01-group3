@@ -14,40 +14,23 @@ jobs:
 
     steps:
       # Checkout the repository to get the code
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@master
 
       # Download the SnowSQL installer
       - name: Download SnowSQL
         run: |
-          echo "Downloading SnowSQL installer..."
-          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.2-linux_x86_64.bash
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
 
-      # Install SnowSQL if it's not already installed
+      # Install SnowSQL
       - name: Install SnowSQL
         run: |
-          # Check if SnowSQL is already installed
-          if ! command -v snowsql &> /dev/null; then
-            echo "SnowSQL not found. Installing..."
-            # Clean up any existing SnowSQL files
-            rm -f snowsql-1.3.2-linux_x86_64.bash
+          SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
-            # Directly download the SnowSQL installer for version 1.3.2 with verbose output
-            curl -LO --verbose https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.2-linux_x86_64.bash
-
-            # Make the downloaded file executable
-            chmod +x snowsql-1.3.2-linux_x86_64.bash
-
-            # Run the SnowSQL installation script
-            ./snowsql-1.3.2-linux_x86_64.bash --verbose
-          else
-            echo "SnowSQL is already installed."
-          fi
-
-      # Test SnowSQL installation by checking its version
+      # Test the SnowSQL installation by checking the version
       - name: Test installation
         run: |
-          snowsql -v
+          ~/snowflake/snowsql -v
 
       # Set up Snowflake credentials using environment variables
       - name: Set up Snowflake credentials
@@ -60,7 +43,7 @@ jobs:
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
-      # Run the SQL scripts from the repository
+      # Run SQL scripts from the repository
       - name: Run SQL scripts in Snowflake
         run: |
           snowsql -c default -f ./sql/country.sql
@@ -73,4 +56,3 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
-
