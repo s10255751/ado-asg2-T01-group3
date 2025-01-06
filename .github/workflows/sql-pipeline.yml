@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest  # Use a Linux-based runner
 
     steps:
-      # Checkout the repository to get the code
       - name: Checkout
         uses: actions/checkout@master
 
@@ -35,6 +34,15 @@ jobs:
           source ~/.profile
           ~/snowflake/snowsql -v
 
+      # Debug Snowflake credentials (without printing the password)
+      - name: Debug Snowflake credentials
+        run: |
+          echo "SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}"
+          echo "SNOWFLAKE_USER: ${SNOWFLAKE_USER}"
+          echo "SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}"
+          echo "SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}"
+          echo "SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}"
+
       # Set up Snowflake credentials using environment variables
       - name: Set up Snowflake credentials
         run: |
@@ -45,6 +53,10 @@ jobs:
           echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
+
+      # Print the SnowSQL config file for debugging
+      - name: Print SnowSQL config file
+        run: cat $HOME/.snowsql/config
 
       # Run SQL scripts from the repository
       - name: Run SQL scripts in Snowflake
