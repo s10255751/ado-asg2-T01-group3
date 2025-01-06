@@ -18,11 +18,14 @@ jobs:
 
       - name: Install SnowSQL (Snowflake CLI)
         run: |
-          # Install SnowSQL
-          curl -O https://s3.amazonaws.com/snowflake-client/snowflake-snowsql-latest-linux_x86_64.tar.gz
+          # Download SnowSQL (ensure the URL is valid)
+          curl -L -O https://s3.amazonaws.com/snowflake-client/snowflake-snowsql-latest-linux_x86_64.tar.gz
+          # Check the file format
+          file snowflake-snowsql-latest-linux_x86_64.tar.gz
+          # Extract and install
           tar -xvf snowflake-snowsql-latest-linux_x86_64.tar.gz
           sudo mv snowsql /usr/local/bin/
-
+          
       - name: Set up Snowflake credentials
         run: |
           echo "[connections.default]" > ~/.snowsql/config
