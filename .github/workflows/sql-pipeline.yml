@@ -27,10 +27,12 @@ jobs:
         run: |
           SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
-      # Test the SnowSQL installation by checking the version
-      - name: Test installation
+      # Ensure the SNOWSQL binary is available in the PATH
+      - name: Add SnowSQL to PATH
         run: |
-          ~/snowflake/snowsql -v
+          echo "export PATH=$PATH:~/snowflake" >> $GITHUB_ENV
+          source ~/.profile
+          snowsql -v  # Test the installation
 
       # Set up Snowflake credentials using environment variables
       - name: Set up Snowflake credentials
