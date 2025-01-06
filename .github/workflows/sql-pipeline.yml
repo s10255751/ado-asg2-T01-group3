@@ -15,19 +15,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install SnowSQL (Windows version)
+      - name: Install SnowSQL
         run: |
-          # Define SnowSQL version
-          $SNOWSQL_VERSION = "3.12.4"  # Replace with desired version
+          # Set the version and download URL for the MSI installer
+          $version = "1.3.2"
+          $downloadUrl = "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$version/windows_x86_64/snowsql-$version-windows_x86_64.msi"
 
-          # Download SnowSQL installer (Windows .exe)
-          Invoke-WebRequest -Uri "https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/windows_x86_64/snowsql-$SNOWSQL_VERSION-win_x86_64.exe" -OutFile "snowsql-installer.exe"
+          # Download the MSI installer
+          Invoke-WebRequest -Uri $downloadUrl -OutFile "snowsql-installer.msi"
 
-          # Install SnowSQL
-          Start-Process -FilePath "snowsql-installer.exe" -ArgumentList "/quiet" -Wait
-
-          # Remove installer file
-          Remove-Item "snowsql-installer.exe"
+          # Install SnowSQL using the MSI installer
+          Start-Process msiexec.exe -ArgumentList '/i', 'snowsql-installer.msi', '/quiet', '/norestart' -Wait
 
       - name: Set up Snowflake credentials
         run: |
