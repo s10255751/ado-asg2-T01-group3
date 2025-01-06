@@ -68,13 +68,13 @@ jobs:
       # Run SQL scripts from the repository
       - name: Run SQL scripts in Snowflake
         run: |
-          ~/snowflake/snowsql -c default -f ./sql/country.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/customers.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/facebook_ads.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/order.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/order_details.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/payments.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/product_reviews.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/region.sql -o log_level=DEBUG
-          ~/snowflake/snowsql -c default -f ./sql/vendors.sql -o log_level=DEBUG
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/country.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/customers.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/facebook_ads.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/order_details.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/payments.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
+          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
 
