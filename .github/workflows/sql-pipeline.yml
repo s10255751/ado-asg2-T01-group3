@@ -26,10 +26,13 @@ jobs:
       - name: Install SnowSQL
         run: |
           SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
+          echo "export PATH=\$PATH:~/snowflake/snowsql" >> ~/.profile
+          source ~/.profile
 
       # Test the SnowSQL installation by checking the version
       - name: Test installation
         run: |
+          source ~/.profile
           ~/snowflake/snowsql -v
 
       # Set up Snowflake credentials using environment variables
@@ -46,14 +49,14 @@ jobs:
       # Run SQL scripts from the repository
       - name: Run SQL scripts in Snowflake
         run: |
-          snowsql -c default -f ./sql/country.sql
-          snowsql -c default -f ./sql/customers.sql
-          snowsql -c default -f ./sql/facebook_ads.sql
-          snowsql -c default -f ./sql/order.sql
-          snowsql -c default -f ./sql/order_details.sql
-          snowsql -c default -f ./sql/payments.sql
-          snowsql -c default -f ./sql/product_reviews.sql
-          snowsql -c default -f ./sql/region.sql
-          snowsql -c default -f ./sql/vendors.sql
+          ~/snowflake/snowsql -c default -f ./sql/country.sql
+          ~/snowflake/snowsql -c default -f ./sql/customers.sql
+          ~/snowflake/snowsql -c default -f ./sql/facebook_ads.sql
+          ~/snowflake/snowsql -c default -f ./sql/order.sql
+          ~/snowflake/snowsql -c default -f ./sql/order_details.sql
+          ~/snowflake/snowsql -c default -f ./sql/payments.sql
+          ~/snowflake/snowsql -c default -f ./sql/product_reviews.sql
+          ~/snowflake/snowsql -c default -f ./sql/region.sql
+          ~/snowflake/snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
 
