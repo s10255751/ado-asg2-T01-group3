@@ -22,12 +22,16 @@ jobs:
           SNOWSQL_VERSION="1.2.9"
           DOWNLOAD_URL="https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/linux_x86_64/snowsql-$SNOWSQL_VERSION-linux_x86_64.bash"
           
-          # Download the SnowSQL installation script
-          curl -O $DOWNLOAD_URL
-          
-          # Make the downloaded file executable
+          # Download the SnowSQL installation script (following redirects if needed)
+          curl -L -O $DOWNLOAD_URL
+
+          # Verify if the downloaded file is a bash script by checking its contents
+          echo "First 10 lines of downloaded file:"
+          head -n 10 snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
+
+          # Ensure the downloaded file is executable
           chmod +x snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
-          
+
           # Run the SnowSQL installation script
           ./snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
 
@@ -54,5 +58,3 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
-
-
