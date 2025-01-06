@@ -72,3 +72,4 @@ jobs:
           ~/snowflake/snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
 
+
