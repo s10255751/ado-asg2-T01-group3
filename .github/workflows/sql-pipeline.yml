@@ -11,21 +11,19 @@ on:
 jobs:
   run-sql-scripts:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Install SnowSQL (Snowflake CLI)
         run: |
-          # Download SnowSQL (ensure the URL is valid)
-          curl -L -O https://s3.amazonaws.com/snowflake-client/snowflake-snowsql-latest-linux_x86_64.tar.gz
-          # Check the file format
-          file snowflake-snowsql-latest-linux_x86_64.tar.gz
-          # Extract and install
-          tar -xvf snowflake-snowsql-latest-linux_x86_64.tar.gz
-          sudo mv snowsql /usr/local/bin/
+          # Define the SnowSQL version you want to install
+          SNOWSQL_VERSION="3.12.4"  # Replace with the desired version
           
+          # Download and install SnowSQL
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/${SNOWSQL_VERSION}/linux_x86_64/snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+          bash snowsql-${SNOWSQL_VERSION}-linux_x86_64.bash
+
       - name: Set up Snowflake credentials
         run: |
           echo "[connections.default]" > ~/.snowsql/config
@@ -49,4 +47,3 @@ jobs:
           snowsql -c default -f ./sql/region.sql
           snowsql -c default -f ./sql/vendors.sql
           # Add other SQL scripts here if necessary
-
