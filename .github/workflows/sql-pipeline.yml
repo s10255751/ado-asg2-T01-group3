@@ -77,5 +77,4 @@ jobs:
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
-          ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/constraints.sql
 
