@@ -1,70 +1,37 @@
--- REMOVING DUPLICATES 
-
--- ORDER  
-
+-- Step 1: Remove duplicates and standardize date formats
 CREATE OR REPLACE TABLE COLLECTIBLE_DIECAST.ORDERS AS  
-
 SELECT *  
-
 FROM (  
-
-      SELECT  
-
-          *,  
-
-          ROW_NUMBER() OVER (PARTITION BY ordernumber ORDER BY ordernumber ASC) AS RN  
-
-      FROM COLLECTIBLE_DIECAST.ORDERS 
-
+    SELECT  
+        *,  
+        ROW_NUMBER() OVER (PARTITION BY ordernumber ORDER BY ordernumber ASC) AS RN  
+    FROM COLLECTIBLE_DIECAST.ORDERS 
 )  
-
 WHERE RN = 1; 
 
- 
-
--- DROP COLUMN RN 
-
-ALTER TABLE COLLECTIBLE_DIECAST.ORDERS DROP COLUMN RN; 
-
- 
-
--- REARRANGE THE TABLE 
+ALTER TABLE COLLECTIBLE_DIECAST.ORDERS DROP COLUMN RN;
 
 CREATE OR REPLACE TABLE COLLECTIBLE_DIECAST.ORDERS AS  
-
 SELECT *  
-
 FROM COLLECTIBLE_DIECAST.ORDERS 
-
-ORDER BY ordernumber ASC; 
-
--- STANDARDIZE DATE FORMATS 
+ORDER BY ordernumber ASC;
 
 CREATE OR REPLACE TABLE COLLECTIBLE_DIECAST.ORDERS AS   
-
 SELECT   
+    orderNumber, 
+    TO_DATE(NULLIF(orderDate, 'NULL'), 'DD/MM/YYYY') AS orderDate, 
+    TO_DATE(NULLIF(requiredDate, 'NULL'), 'DD/MM/YYYY') AS requiredDate, 
+    TO_DATE(NULLIF(shippedDate, 'NULL'), 'DD/MM/YYYY') AS shippedDate, 
+    status,  
+    comments,  
+    customerNumber,  
+    employeeNumber 
+FROM COLLECTIBLE_DIECAST.ORDERS;
 
-        orderNumber, 
-
-        TO_DATE(NULLIF(orderDate, 'NULL'), 'DD/MM/YYYY') AS orderDate, 
-
-        TO_DATE(NULLIF(requiredDate, 'NULL'), 'DD/MM/YYYY') AS requiredDate, 
-
-        TO_DATE(NULLIF(shippedDate, 'NULL'), 'DD/MM/YYYY') AS shippedDate, 
-
-        status,  
-
-        comments,  
-
-        customerNumber,  
-
-        employeeNumber 
-
-FROM COLLECTIBLE_DIECAST.ORDERS; 
-
--- ADD CONSTRAINTS
+-- Step 2: Add constraints AFTER the table is created/replaced
 ALTER TABLE COLLECTIBLE_DIECAST.ORDERS
 ADD CONSTRAINT PK_ORDERNUMBER PRIMARY KEY (orderNumber),
 ADD CONSTRAINT FK_CUSTOMERNUMBER FOREIGN KEY (customerNumber) REFERENCES ADO_GROUP3_DB.COLLECTIBLE_DIECAST.CUSTOMERS(customerNumber),
 ADD CONSTRAINT FK_EMPLOYEENUMBER FOREIGN KEY (employeeNumber) REFERENCES ADO_GROUP3_DB.COLLECTIBLE_DIECAST.EMPLOYEES(employeeNumber),
 ADD CONSTRAINT FK_MODEID FOREIGN KEY (modeID) REFERENCES ADO_GROUP3_DB.COLLECTIBLE_DIECAST.SHIPMENT_MODE(modeID);
+
