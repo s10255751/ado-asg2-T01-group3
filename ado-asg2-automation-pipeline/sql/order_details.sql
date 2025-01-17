@@ -13,3 +13,8 @@ WHERE (ordernumber, productcode) IN (
     WHERE RN > 1
 );
 
+SELECT *
+FROM COLLECTIBLE_DIECAST.ORDER_DETAILS
+ORDER BY ordernumber, orderlinenumber ASC;
+
+
