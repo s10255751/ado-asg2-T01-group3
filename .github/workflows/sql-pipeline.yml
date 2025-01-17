@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main  # Trigger the workflow on pull requests to the main branch
+  schedule:
+    - cron: "0 19 * * *"  # Run every day at 19:00 UTC (3:00 AM SGT)
 
 jobs:
   run-sql-scripts:
