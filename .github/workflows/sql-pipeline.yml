@@ -18,16 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      # Download the SnowSQL installer
-      - name: Install Compatible OpenSSL Version
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libssl1.1 || (
-            wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb &&
-            sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb
-          )
+          sudo apt-get install -y libssl3 curl
 
-      - name: Download & Install SnowSQL
+      - name: Download & Install Latest SnowSQL
         run: |
           SNOWSQL_VERSION=$(curl -s https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/ | grep -oP 'snowsql-\K[0-9\.]+(?=-linux_x86_64.bash)')
           curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/linux_x86_64/snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
