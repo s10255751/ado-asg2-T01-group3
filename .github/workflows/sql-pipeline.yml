@@ -13,18 +13,18 @@ on:
 jobs:
   run-sql-scripts:
     runs-on: ubuntu-latest  # Use a Linux-based runner
+    container:
+      image: ubuntu:20.04  # Use an older version of Ubuntu with libssl1.1 compatibility
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Install OpenSSL and fix libcrypto compatibility
-      - name: Install OpenSSL and fix libcrypto
+      # Update package manager and install dependencies
+      - name: Install Required Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libssl-dev
-          sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 || true
-          sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.1.1 || true
+          apt-get update
+          apt-get install -y curl libssl1.1 libcrypto++6
 
       # Download the SnowSQL installer
       - name: Download SnowSQL
@@ -87,4 +87,5 @@ jobs:
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
+
 
