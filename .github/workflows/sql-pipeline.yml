@@ -12,7 +12,7 @@ on:
 
 jobs:
   run-sql-scripts:
-    runs-on: ubuntu-latest  # Use a Linux-based runner
+    runs-on: ubuntu-22.04  # Use a Linux-based runner
 
     steps:
       - name: Checkout
