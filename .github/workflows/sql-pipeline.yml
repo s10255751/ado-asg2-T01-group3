@@ -13,18 +13,10 @@ on:
 jobs:
   run-sql-scripts:
     runs-on: ubuntu-latest  # Use a Linux-based runner
-    container:
-      image: ubuntu:20.04  # Use an older version of Ubuntu with libssl1.1 compatibility
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      # Update package manager and install dependencies
-      - name: Install Required Dependencies
-        run: |
-          apt-get update
-          apt-get install -y curl libssl1.1 libcrypto++6
+        uses: actions/checkout@master
 
       # Download the SnowSQL installer
       - name: Download SnowSQL
