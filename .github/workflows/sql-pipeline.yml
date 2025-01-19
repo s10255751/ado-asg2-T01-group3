@@ -18,25 +18,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Install Dependencies
+      # Download the SnowSQL installer
+      - name: Download SnowSQL
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libssl3 curl
-
-      - name: Download & Install Latest SnowSQL
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
+      # Install SnowSQL
+      - name: Install SnowSQL
         run: |
-          SNOWSQL_VERSION=$(curl -s https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/ | grep -oP 'snowsql-\K[0-9\.]+(?=-linux_x86_64.bash)')
-          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/$SNOWSQL_VERSION/linux_x86_64/snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
-          SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-$SNOWSQL_VERSION-linux_x86_64.bash
+          SNOWSQL_DEST=~/snowflake SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
           echo "export PATH=\$PATH:~/snowflake/snowsql" >> ~/.profile
           source ~/.profile
-
       # Test the SnowSQL installation by checking the version
-      - name: Test SnowSQL Installation
+      - name: Test installation
         run: |
           source ~/.profile
           ~/snowflake/snowsql -v
-
       # Debug Snowflake credentials (without printing the password)
       - name: Debug Snowflake credentials
         run: |
@@ -45,7 +41,6 @@ jobs:
           echo "SNOWFLAKE_DATABASE: ${SNOWFLAKE_DATABASE}"
           echo "SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}"
           echo "SNOWFLAKE_SCHEMA: ${SNOWFLAKE_SCHEMA}"
-
       # Set up Snowflake credentials using environment variables
       - name: Set up Snowflake credentials
         env:
@@ -63,9 +58,8 @@ jobs:
           echo "dbname = ${SNOWFLAKE_DATABASE}" >> $HOME/.snowsql/config
           echo "warehouse = ${SNOWFLAKE_WAREHOUSE}" >> $HOME/.snowsql/config
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
-
       # Print the SnowSQL config file for debugging
-      - name: Print SnowSQL Config File
+      - name: Print SnowSQL config file
         run: cat $HOME/.snowsql/config
 
       # Run SQL scripts from the repository
@@ -80,5 +74,3 @@ jobs:
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/product_reviews.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/region.sql
           ~/snowflake/snowsql -c default -f ./ado-asg2-automation-pipeline/sql/vendors.sql
-
-
