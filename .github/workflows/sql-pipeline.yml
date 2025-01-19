@@ -16,7 +16,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+
+      # Install OpenSSL and fix libcrypto compatibility
+      - name: Install OpenSSL and fix libcrypto
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl1.1 || true
+          wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb
+          sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.16_amd64.deb || true
+          sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.3 /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 || true
+          sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.3 /usr/lib/x86_64-linux-gnu/libssl.so.1.1 || true
 
       # Download the SnowSQL installer
       - name: Download SnowSQL
@@ -31,7 +41,7 @@ jobs:
           source ~/.profile
 
       # Test the SnowSQL installation by checking the version
-      - name: Test installation
+      - name: Test SnowSQL Installation
         run: |
           source ~/.profile
           ~/snowflake/snowsql -v
@@ -64,7 +74,7 @@ jobs:
           echo "schemaname = ${SNOWFLAKE_SCHEMA}" >> $HOME/.snowsql/config
 
       # Print the SnowSQL config file for debugging
-      - name: Print SnowSQL config file
+      - name: Print SnowSQL Config File
         run: cat $HOME/.snowsql/config
 
       # Run SQL scripts from the repository
